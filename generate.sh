@@ -2,13 +2,13 @@
 
 rm -f *.svg *.html
 
-cat << EOT > index.html
+cat << EOT > base.html
 <!DOCTYPE html>
 <html>
     <head>
         <meta charset="UTF-8">
         <title>Bookmark Separator</title>
-        <link rel="icon" href="$1.svg" type="image/svg+xml">
+        <link rel="icon" href="__color__.svg" type="image/svg+xml">
         <link rel="stylesheet" type="text/css" href="style.css">
     <head>
     <body>
@@ -22,21 +22,7 @@ cat << EOT > $i.svg
 </svg>
 EOT
 
-cat << EOT > $i.html
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>$i</title>
-        <link rel="icon" href="$i.svg" type="image/svg+xml">
-    </head>
-    <body>
-        <a href="index.html">Bookmark Separator</a>
-    </body>
-</html>
-EOT
-
-cat << EOT >> index.html
+cat << EOT >> base.html
         <a href="$i.html">
             <img src="$i.svg" alt="" width="75" height="75">
         </a>
@@ -44,7 +30,14 @@ EOT
 
 done
 
-cat << EOT >> index.html
+cat << EOT >> base.html
     </body>
 </html>
 EOT
+
+for i in "${@}"; do
+    sed "s/__color__/$i/g" base.html > $i.html
+done
+
+cp $1.html index.html
+rm base.html
